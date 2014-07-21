@@ -2,6 +2,7 @@ var request = require('request');
 var url = require('url');
 var qs = require('querystring');
 var jwt = require('jwt-simple');
+var argv = require('optimist').argv;
 
 var API_KEY = require('../internal-files').API_KEY;
 var JWT_SECRET = require('../internal-files').JWT_SECRET;
@@ -62,7 +63,7 @@ var makeGetRequest = function(path){
 var makePostRequest = function(path){ 
     
     var host = 'zavadil7.cloudapp.net';
-    var augmentedQuery = addQuery(makeAuthenticationObject(MY_FB_ID), 1);
+    var augmentedQuery = addQuery(makeAuthenticationObject(MY_FB_ID), 3);
     console.log('aq', augmentedQuery);
 
     var options = { 
@@ -77,20 +78,19 @@ var makePostRequest = function(path){
 
     request.post(testUrl, function(error, response, body){ 
       if(!error && response.statusCode === 200){
-        for(var i = 0; i < 10; i++){
-          console.log(body[i]);
-        }
+        console.log(body);
       } else {
         console.log('Error:', error);
-      }
+      };
     });
 };
 
 
 
 var runHttpClient = function(){
-  var path = process.argv[2] || '/matches';
-  var httpType = process.argv[3] || 'g';
+  var path = argv.route || '/matches';
+  var httpType = argv.method || 'g';
+  var currentId = argv.id || MY_FB_ID;
   if( httpType === 'g'){
     makeGetRequest(path);
   } else if( httpType === 'p'){
