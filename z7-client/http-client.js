@@ -7,27 +7,12 @@ var API_KEY = require('../internal-files').API_KEY;
 var JWT_SECRET = require('../internal-files').JWT_SECRET;
 var MALE_FB_ID = require('../internal-files').MALE_FB_ID;  //10154433372935473
 var FEMALE_FB_ID = require('../internal-files').FEMALE_FB_ID;
+var MY_FB_ID = require('../internal-files').MY_FB_ID;
 
-var makeAuthenticationString = function(){
+
+var makeAuthenticationObject = function(fbId){
   var jwtWebToken = jwt.encode({
-    fb_id: FEMALE_ID
-    }, JWT_SECRET);
-    
-  var apiWebToken = jwt.encode({
-    apiKey: API_KEY 
-    }, JWT_SECRET);
-
-  var keyAndToken = qs.stringify({
-    apiKey: apiWebToken,
-    token: jwtWebToken
-  });
-  
-  return keyAndToken;
-};
-
-var makeAuthenticationObject = function(){
-  var jwtWebToken = jwt.encode({
-    fb_id: FAKE_FB_ID
+    fb_id: fbId
     }, JWT_SECRET);
     
   var apiWebToken = jwt.encode({
@@ -52,14 +37,13 @@ var addQuery = function(queryObject, targetId){
 
 var makeGetRequest = function(path){ 
     
-    var host = process.env.CURRENT_HOST || 'zavadil7.cloudapp.net';
-
+    var host = 'zavadil7.cloudapp.net';
 
     var options = { 
       protocol: 'http',
       host: host, 
       pathname: path,
-      query: makeAuthenticationObject()
+      query: makeAuthenticationObject(MY_FB_ID)
     };
 
     var testUrl = url.format(options);
@@ -77,8 +61,8 @@ var makeGetRequest = function(path){
 
 var makePostRequest = function(path){ 
     
-    var host = process.env.CURRENT_HOST || 'zavadil7.cloudapp.net';
-    var augmentedQuery = addQuery(makeAuthenticationObject(), 1);
+    var host = 'zavadil7.cloudapp.net';
+    var augmentedQuery = addQuery(makeAuthenticationObject(MY_FB_ID), 1);
     console.log('aq', augmentedQuery);
 
     var options = { 
